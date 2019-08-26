@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 import Routes from './routes';
-import { client } from './utils';
+import { client } from './graphql';
 import { ApolloProvider } from '@apollo/react-hooks';
 
 
