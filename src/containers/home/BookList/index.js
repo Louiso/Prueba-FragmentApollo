@@ -1,25 +1,26 @@
 import React from 'react'
+import { useQuery } from 'react-apollo';
 import Book from './Book';
-import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
-const GET_BOOKS = gql`{
-  books @client {
-    author,
-    title
-  }
+import { GET_BOOKS } from '../../../functions/graphql/local/queries';
+
+const fragments = {
+  book: Book.fragments.book
 }
-`
+
 const BookList = () => {
-  const { data: { books } } = useQuery(GET_BOOKS)
+  const { data: { books } } = useQuery(GET_BOOKS(fragments), {
+    displayName: 'Sera'
+  })
   return (
     <div>
-      {
-        books.map((book, index) => (
+        {books.map((book, index) => (
           <Book book = { book } key={index}/>
         ))
       }
     </div>
   )
 }
+
+BookList.fragments = fragments
 
 export default BookList

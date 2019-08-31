@@ -1,36 +1,39 @@
 import React from 'react'
-import { useMutation } from '@apollo/react-hooks';
 import { Formik } from 'formik'
-import { ADD_BOOK } from '../../../functions/graphql/local';
+import { useMutation } from 'react-apollo';
+import gql from 'graphql-tag';
+import { ADD_BOOK } from '../../../functions/graphql/local/mutations';
 
-const useAddBook = () => {
-  const [ mutation ] = useMutation(ADD_BOOK,{
-    update: (cache, resp ) => {
-      console.log(cache.optimisticData.data)
-      console.log(resp)
+const fragments = {
+  book: gql`
+    fragment BookFragment on Book {
+      _id,
+      author,
+      title
     }
-  })
-  return mutation 
+  `
 }
 
 const AddItem = () => {
-  const addBook = useAddBook()
+
+  const [ addBook ] = useMutation(ADD_BOOK(fragments))
   const book = {
-    _id: Math.random(),
-    author: 'Sera',
-    title: ':v',
+    author: '',
+    title: '',
     __typename: 'Book'
   }
   return (
     <div>
       <Formik
-        initialValues = { book /** {author, title}*/}
+        initialValues = { book }
         onSubmit={(book, actions) => {
+          book._id = Math.random()
           addBook({
             variables: {
               book
             }
           })
+          actions.resetForm()
         }}
         render= {({handleSubmit, values: {title, author, dates}, handleChange}) => (
           <form onSubmit={handleSubmit}>
@@ -42,13 +45,6 @@ const AddItem = () => {
               name="author" 
               value ={author} 
               onChange={handleChange}/>
-            {/* {dates.map(({value}, index) => (
-              <input 
-                key={index} 
-                name={`dates[${index}].value`} 
-                value={value} 
-                onChange={handleChange}/>
-            ))} */}
             <input type="submit" value="agregar"/>
           </form>
         )}
@@ -57,5 +53,6 @@ const AddItem = () => {
   )
 }
 
+AddItem.fragments = fragments
 
 export default AddItem

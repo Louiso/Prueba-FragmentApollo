@@ -3,12 +3,14 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 import Routes from './routes';
-import { client } from './graphql';
+import { client } from './apollo/config/client';
 import { ApolloProvider } from '@apollo/react-hooks';
-
+import 'antd/dist/antd.css';
+import CssBaseline from '@material-ui/core/CssBaseline'
 
 ReactDOM.render(
   <ApolloProvider client={client}>
+    <CssBaseline/>
     <Routes />
   </ApolloProvider>
 , document.getElementById('root'));
